@@ -16,4 +16,4 @@ Xác thực: JWT (JSON Web Token)
 Kiến trúc: Microservices, REST API
 
 👥 Nhóm thực hiện
-Dự án được thực hiện bởi Nhóm N01 - Môn Kiến Trúc Phần mềm.
+Dự án được thực hiện bởi Nhóm 9- Môn Kiến Trúc Phần mềm.
