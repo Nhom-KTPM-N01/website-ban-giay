@@ -59,7 +59,7 @@ const Login = () => {
         </p>
 
         <div style={{ marginTop: 20, padding: 16, background: '#f5f5f5', borderRadius: 10, fontSize: 13 }}>
-          <strong>Demo Admin:</strong> admin@shoestore.com / admin123
+     
         </div>
       </div>
     </div>

@@ -13,13 +13,14 @@ export const AdminLayout = ({ children }) => {
   const handleLogout = () => { logoutUser(); navigate('/'); };
 
   const navItems = [
-    { path: '/admin', label: '📊 Dashboard', exact: true },
-    { path: '/admin/products', label: '👟 Sản phẩm' },
-    { path: '/admin/brands', label: '🏷️ Thương hiệu' },
-    { path: '/admin/categories', label: '📂 Danh mục' },
-    { path: '/admin/inventory', label: '📦 Kho hàng' },
-    { path: '/admin/orders', label: '📋 Đơn hàng' },
-    { path: '/admin/users', label: '👥 Người dùng' },
+    { path: '/admin', label: ' Dashboard', exact: true },
+    { path: '/admin/products', label: ' Sản phẩm' },
+    { path: '/admin/brands', label: ' Thương hiệu' },
+    { path: '/admin/categories', label: ' Danh mục' },
+    { path: '/admin/inventory', label: ' Kho hàng' },
+    { path: '/admin/orders', label: ' Đơn hàng' },
+    { path: '/admin/users', label: ' Người dùng' },
+    { path: '/admin/reports', label: ' Báo cáo' },
   ];
 
   return (
@@ -48,11 +49,11 @@ export const AdminLayout = ({ children }) => {
         </nav>
         <div style={{ padding: 16 }}>
           <Link to="/" style={{ display: 'block', padding: '10px 16px', color: '#aaa', fontSize: 13, textDecoration: 'none', marginBottom: 4 }}>
-            🏠 Về trang chủ
+             Về trang chủ
           </Link>
           <button onClick={handleLogout} style={{ width: '100%', padding: '10px 16px', background: 'rgba(255,255,255,0.05)',
             color: '#aaa', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, cursor: 'pointer', fontSize: 13 }}>
-            🚪 Đăng xuất
+             Đăng xuất
           </button>
         </div>
       </div>
@@ -96,9 +97,9 @@ const AdminDashboard = () => {
         <>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20, marginBottom: 32 }}>
             {[
-              { label: 'Tổng đơn hàng', value: stats?.totalOrders || 0, icon: '📋', color: '#E3F2FD' },
-              { label: 'Doanh thu', value: formatPrice(stats?.totalRevenue || 0), icon: '💰', color: '#E8F5E9' },
-              { label: 'Đơn chờ', value: stats?.pendingOrders || 0, icon: '⏳', color: '#FFF8E1' },
+              { label: 'Tổng đơn hàng', value: stats?.totalOrders || 0, icon: '', color: '#E3F2FD' },
+              { label: 'Doanh thu', value: formatPrice(stats?.totalRevenue || 0), icon: '', color: '#E8F5E9' },
+              { label: 'Đơn chờ', value: stats?.pendingOrders || 0, icon: '', color: '#FFF8E1' },
             ].map(card => (
               <div key={card.label} style={{ background: card.color, borderRadius: 16, padding: 24 }}>
                 <div style={{ fontSize: 32, marginBottom: 8 }}>{card.icon}</div>
@@ -108,7 +109,7 @@ const AdminDashboard = () => {
             ))}
           </div>
 
-          <h2 style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 22, marginBottom: 16 }}>ĐƠN HÀNG GẦN ĐÂY</h2>
+          <h2 style={{ fontSize: 22, marginBottom: 16 }}>ĐƠN HÀNG GẦN ĐÂY</h2>
           <div className="table-container">
             <table>
               <thead><tr><th>ID</th><th>Khách hàng</th><th>Tổng tiền</th><th>Trạng thái</th><th>Ngày tạo</th></tr></thead>

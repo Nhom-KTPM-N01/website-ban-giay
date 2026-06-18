@@ -12,7 +12,6 @@ const createOrder = async (req, res) => {
     const { shipping_address, phone, note } = req.body;
     if (!shipping_address) return res.status(400).json({ success: false, message: 'Vui lòng nhập địa chỉ giao hàng.' });
 
-    // Get cart from cart-service
     const cartRes = await axios.get(`${CART_URL}/api/cart/internal/${req.user.id}`);
     const cartItems = cartRes.data.cart;
     if (!cartItems || cartItems.length === 0) {
@@ -35,12 +34,10 @@ const createOrder = async (req, res) => {
       );
     }
 
-    // Decrease stock in product-service
     await axios.post(`${PRODUCT_URL}/api/products/decrease-stock`, {
       items: cartItems.map(i => ({ product_id: i.product_id, size: i.size, quantity: i.quantity }))
     });
 
-    // Clear cart
     await axios.delete(`${CART_URL}/api/cart/internal/${req.user.id}/clear`);
 
     await conn.commit();
@@ -93,4 +90,56 @@ const getDashboardStats = async (req, res) => {
   } catch (err) { res.status(500).json({ success: false, message: err.message }); }
 };
 
-module.exports = { createOrder, getUserOrders, getAllOrders, updateOrderStatus, getDashboardStats };
+// Báo cáo doanh thu theo ngày
+const getRevenueByDay = async (req, res) => {
+  try {
+    const { date } = req.query; // YYYY-MM-DD
+    if (!date) return res.status(400).json({ success: false, message: 'Vui lòng truyền tham số date (YYYY-MM-DD)' });
+    const [[{ revenue }]] = await pool.query(
+      "SELECT COALESCE(SUM(total_amount),0) as revenue FROM orders WHERE DATE(created_at) = ? AND status != 'cancelled'",
+      [date]
+    );
+    const [[{ totalOrders }]] = await pool.query(
+      "SELECT COUNT(*) as totalOrders FROM orders WHERE DATE(created_at) = ? AND status != 'cancelled'",
+      [date]
+    );
+    res.json({ success: true, date, revenue, totalOrders });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+};
+
+// Báo cáo doanh thu theo tháng
+const getRevenueByMonth = async (req, res) => {
+  try {
+    const { month, year } = req.query; // month: 1-12, year: 2024
+    if (!month || !year) return res.status(400).json({ success: false, message: 'Vui lòng truyền month và year' });
+    const [[{ revenue }]] = await pool.query(
+      "SELECT COALESCE(SUM(total_amount),0) as revenue FROM orders WHERE MONTH(created_at) = ? AND YEAR(created_at) = ? AND status != 'cancelled'",
+      [month, year]
+    );
+    const [[{ totalOrders }]] = await pool.query(
+      "SELECT COUNT(*) as totalOrders FROM orders WHERE MONTH(created_at) = ? AND YEAR(created_at) = ? AND status != 'cancelled'",
+      [month, year]
+    );
+    res.json({ success: true, month, year, revenue, totalOrders });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+};
+
+// Top 5 sản phẩm bán chạy
+const getTopProducts = async (req, res) => {
+  try {
+    const [topProducts] = await pool.query(
+      `SELECT oi.product_id, oi.product_name, oi.product_image,
+        SUM(oi.quantity) as total_quantity,
+        SUM(oi.quantity * oi.price) as total_revenue
+       FROM order_items oi
+       JOIN orders o ON oi.order_id = o.id
+       WHERE o.status != 'cancelled'
+       GROUP BY oi.product_id, oi.product_name, oi.product_image
+       ORDER BY total_quantity DESC
+       LIMIT 5`
+    );
+    res.json({ success: true, topProducts });
+  } catch (err) { res.status(500).json({ success: false, message: err.message }); }
+};
+
+module.exports = { createOrder, getUserOrders, getAllOrders, updateOrderStatus, getDashboardStats, getRevenueByDay, getRevenueByMonth, getTopProducts };

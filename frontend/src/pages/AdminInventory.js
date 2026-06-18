@@ -76,10 +76,10 @@ const AdminInventory = () => {
   };
 
   const tabs = [
-    { key: 'stock', label: '📦 Tổng quan tồn kho' },
+    { key: 'stock', label: ' Tổng quan tồn kho' },
     { key: 'lowstock', label: `⚠️ Sắp hết (${lowStock.length})` },
-    { key: 'suppliers', label: '🏭 Nhà cung cấp' },
-    { key: 'receipts', label: '📋 Phiếu nhập' },
+    { key: 'suppliers', label: ' Nhà cung cấp' },
+    { key: 'receipts', label: ' Phiếu nhập' },
   ];
 
   return (

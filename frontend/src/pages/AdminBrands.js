@@ -90,7 +90,7 @@ const AdminBrands = () => {
                   <td style={{ color: '#888', fontSize: 13 }}>{new Date(b.created_at).toLocaleDateString('vi-VN')}</td>
                   <td>
                     <div style={{ display: 'flex', gap: 8 }}>
-                      <button className="btn btn-outline btn-sm" onClick={() => openEdit(b)}>✏️ Sửa</button>
+                      <button className="btn btn-outline btn-sm" onClick={() => openEdit(b)}> Sửa</button>
                       <button className="btn btn-sm" style={{ background: '#FFEBEE', color: '#c62828', border: 'none' }} onClick={() => handleDelete(b.id, b.name)}>🗑 Xóa</button>
                     </div>
                   </td>

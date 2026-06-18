@@ -15,9 +15,10 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminProducts from './pages/AdminProducts';
 import AdminOrders from './pages/AdminOrders';
 import AdminUsers from './pages/AdminUsers';
-import AdminInventory from './pages/AdminInventory';
+import AdminReports from './pages/AdminReports';
 import AdminBrands from './pages/AdminBrands';
 import AdminCategories from './pages/AdminCategories';
+import AdminInventory from './pages/AdminInventory';
 import './index.css';
 
 const PrivateRoute = ({ children }) => {
@@ -54,6 +55,7 @@ function AppRoutes() {
         <Route path="/admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         <Route path="/admin/products" element={<AdminRoute><AdminProducts /></AdminRoute>} />
         <Route path="/admin/inventory" element={<AdminRoute><AdminInventory /></AdminRoute>} />
+        <Route path="/admin/reports" element={<AdminRoute><AdminReports /></AdminRoute>} />
         <Route path="/admin/orders" element={<AdminRoute><AdminOrders /></AdminRoute>} />
         <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
         <Route path="/admin/brands" element={<AdminRoute><AdminBrands /></AdminRoute>} />

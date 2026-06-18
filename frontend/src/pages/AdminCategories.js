@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { AdminLayout } from './AdminDashboard';
-import { getCategories, createCategory } from '../services/api';
+import { getCategories, createCategory, updateCategory, deleteCategory } from '../services/api';
 
 const AdminCategories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [msg, setMsg] = useState('');
   const [showModal, setShowModal] = useState(false);
+  const [editCategory, setEditCategory] = useState(null);
   const [form, setForm] = useState({ name: '', slug: '', description: '' });
 
   const fetchCategories = () => {
@@ -20,17 +21,35 @@ const AdminCategories = () => {
 
   const toSlug = (str) => str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
-  const openAdd = () => { setForm({ name: '', slug: '', description: '' }); setShowModal(true); };
+  const openAdd = () => { setEditCategory(null); setForm({ name: '', slug: '', description: '' }); setShowModal(true); };
+  const openEdit = (c) => { setEditCategory(c); setForm({ name: c.name, slug: c.slug, description: c.description || '' }); setShowModal(true); };
 
-  const handleNameChange = (val) => setForm(f => ({ ...f, name: val, slug: toSlug(val) }));
+  const handleNameChange = (val) => {
+    setForm(f => ({ ...f, name: val, slug: editCategory ? f.slug : toSlug(val) }));
+  };
 
   const handleSave = async () => {
     if (!form.name.trim()) return setMsg('❌ Vui lòng nhập tên danh mục');
     if (!form.slug.trim()) return setMsg('❌ Vui lòng nhập slug');
     try {
-      await createCategory(form);
-      setMsg('✅ Thêm danh mục thành công!');
+      if (editCategory) {
+        await updateCategory(editCategory.id, form);
+        setMsg('✅ Cập nhật danh mục thành công!');
+      } else {
+        await createCategory(form);
+        setMsg('✅ Thêm danh mục thành công!');
+      }
       setShowModal(false);
+      fetchCategories();
+    } catch (e) { setMsg('❌ ' + (e.response?.data?.message || 'Lỗi server')); }
+    setTimeout(() => setMsg(''), 3000);
+  };
+
+  const handleDelete = async (id, name) => {
+    if (!window.confirm(`Xóa danh mục "${name}"?`)) return;
+    try {
+      await deleteCategory(id);
+      setMsg('✅ Đã xóa danh mục!');
       fetchCategories();
     } catch (e) { setMsg('❌ ' + (e.response?.data?.message || 'Lỗi server')); }
     setTimeout(() => setMsg(''), 3000);
@@ -60,9 +79,9 @@ const AdminCategories = () => {
               <tr>
                 <th>ID</th>
                 <th>Tên danh mục</th>
-                <th>Slug</th>
                 <th>Mô tả</th>
                 <th>Ngày tạo</th>
+                <th>Thao tác</th>
               </tr>
             </thead>
             <tbody>
@@ -70,9 +89,14 @@ const AdminCategories = () => {
                 <tr key={c.id}>
                   <td style={{ color: '#888', fontWeight: 600 }}>#{c.id}</td>
                   <td style={{ fontWeight: 600 }}>{c.name}</td>
-                  <td><span style={{ background: '#f0f0f0', padding: '3px 10px', borderRadius: 20, fontSize: 12, fontFamily: 'monospace' }}>{c.slug}</span></td>
                   <td style={{ color: '#666', fontSize: 13 }}>{c.description || '—'}</td>
                   <td style={{ color: '#888', fontSize: 13 }}>{new Date(c.created_at).toLocaleDateString('vi-VN')}</td>
+                  <td>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <button className="btn btn-outline btn-sm" onClick={() => openEdit(c)}> Sửa</button>
+                      <button className="btn btn-sm" style={{ background: '#FFEBEE', color: '#c62828', border: 'none' }} onClick={() => handleDelete(c.id, c.name)}>🗑 Xóa</button>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -81,11 +105,12 @@ const AdminCategories = () => {
         </div>
       )}
 
-      {/* Modal */}
       {showModal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
           <div style={{ background: 'white', borderRadius: 16, padding: 32, width: 440, boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
-            <h2 style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 24, marginBottom: 24 }}>THÊM DANH MỤC</h2>
+            <h2 style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: 24, marginBottom: 24 }}>
+              {editCategory ? 'SỬA DANH MỤC' : 'THÊM DANH MỤC'}
+            </h2>
             <div style={{ marginBottom: 16 }}>
               <label style={{ display: 'block', fontWeight: 600, fontSize: 13, marginBottom: 6, textTransform: 'uppercase' }}>Tên danh mục *</label>
               <input
@@ -95,17 +120,6 @@ const AdminCategories = () => {
                 placeholder="VD: Sneaker, Chạy bộ..."
                 style={{ width: '100%' }}
               />
-            </div>
-            <div style={{ marginBottom: 16 }}>
-              <label style={{ display: 'block', fontWeight: 600, fontSize: 13, marginBottom: 6, textTransform: 'uppercase' }}>Slug *</label>
-              <input
-                className="form-input"
-                value={form.slug}
-                onChange={e => setForm({ ...form, slug: e.target.value })}
-                placeholder="VD: sneaker, running..."
-                style={{ width: '100%' }}
-              />
-              <div style={{ fontSize: 12, color: '#888', marginTop: 4 }}>Tự động tạo từ tên, có thể chỉnh sửa</div>
             </div>
             <div style={{ marginBottom: 24 }}>
               <label style={{ display: 'block', fontWeight: 600, fontSize: 13, marginBottom: 6, textTransform: 'uppercase' }}>Mô tả</label>
@@ -120,7 +134,7 @@ const AdminCategories = () => {
             </div>
             <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end' }}>
               <button className="btn btn-outline" onClick={() => setShowModal(false)}>Hủy</button>
-              <button className="btn btn-accent" onClick={handleSave}>Thêm mới</button>
+              <button className="btn btn-accent" onClick={handleSave}>{editCategory ? 'Lưu thay đổi' : 'Thêm mới'}</button>
             </div>
           </div>
         </div>

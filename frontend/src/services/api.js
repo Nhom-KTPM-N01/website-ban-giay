@@ -47,6 +47,8 @@ export const deleteBrand = (id) => api.delete(`/brands/${id}`);
 // Categories
 export const getCategories = () => api.get('/categories');
 export const createCategory = (data) => api.post('/categories', data);
+export const updateCategory = (id, data) => api.put(`/categories/${id}`, data);
+export const deleteCategory = (id) => api.delete(`/categories/${id}`);
 
 // Inventory
 export const getSuppliers = () => api.get('/inventory/suppliers');
@@ -75,3 +77,6 @@ export const getAllUsers = () => api.get('/auth/users');
 export const deleteUser = (id) => api.delete(`/auth/users/${id}`);
 
 export default api;
+export const getRevenueByDay = (date) => api.get(`/orders/admin/revenue-by-day?date=${date}`);
+export const getRevenueByMonth = (month, year) => api.get(`/orders/admin/revenue-by-month?month=${month}&year=${year}`);
+export const getTopProducts = () => api.get('/orders/admin/top-products');

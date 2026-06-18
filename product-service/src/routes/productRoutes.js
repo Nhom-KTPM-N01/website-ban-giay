@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { authenticate, isAdmin } = require('../middleware/auth');
 const { getProducts, getProduct, createProduct, updateProduct, deleteProduct, decreaseStock } = require('../controllers/productController');
 const { getBrands, createBrand, updateBrand, deleteBrand } = require('../controllers/brandController');
-const { getCategories, createCategory } = require('../controllers/categoryController');
+const { getCategories, createCategory, updateCategory, deleteCategory } = require('../controllers/categoryController');
 const { getSuppliers, createSupplier, getImportReceipts, createImportReceipt, getLowStock, getStockOverview } = require('../controllers/inventoryController');
 
 // Products
@@ -22,6 +22,8 @@ router.delete('/brands/:id', authenticate, isAdmin, deleteBrand);
 // Categories
 router.get('/categories', getCategories);
 router.post('/categories', authenticate, isAdmin, createCategory);
+router.put('/categories/:id', authenticate, isAdmin, updateCategory);
+router.delete('/categories/:id', authenticate, isAdmin, deleteCategory);
 
 // Inventory
 router.get('/inventory/suppliers', authenticate, isAdmin, getSuppliers);

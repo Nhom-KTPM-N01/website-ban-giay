@@ -151,7 +151,7 @@ const AdminProducts = () => {
                   <td style={{ fontSize: 13, color: '#888' }}>{p.category_name || p.category_slug}</td>
                   <td>
                     <div style={{ display: 'flex', gap: 8 }}>
-                      <button className="btn btn-outline btn-sm" onClick={() => openEdit(p)}>✏️ Sửa</button>
+                      <button className="btn btn-outline btn-sm" onClick={() => openEdit(p)}> Sửa</button>
                       <button className="btn btn-danger btn-sm" onClick={() => handleDelete(p.id, p.name)}>🗑 Xóa</button>
                     </div>
                   </td>

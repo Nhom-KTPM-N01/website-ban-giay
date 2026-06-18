@@ -63,6 +63,8 @@ app.post('/api/brands', authenticate, isAdmin, proxy(PRODUCT_SERVICE_URL));
 app.put('/api/brands/:id', authenticate, isAdmin, proxy(PRODUCT_SERVICE_URL));
 app.delete('/api/brands/:id', authenticate, isAdmin, proxy(PRODUCT_SERVICE_URL));
 app.post('/api/categories', authenticate, isAdmin, proxy(PRODUCT_SERVICE_URL));
+app.put('/api/categories/:id', authenticate, isAdmin, proxy(PRODUCT_SERVICE_URL));
+app.delete('/api/categories/:id', authenticate, isAdmin, proxy(PRODUCT_SERVICE_URL));
 
 // Inventory (admin)
 app.use('/api/inventory', authenticate, isAdmin, proxy(PRODUCT_SERVICE_URL));

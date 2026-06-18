@@ -141,7 +141,7 @@ const Home = () => {
           {/* Bottom */}
           <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: 24, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
             <div style={{ color: '#555', fontSize: 13 }}>© 2024 KickZone. All rights reserved.</div>
-            <div style={{ color: '#555', fontSize: 13 }}>Được xây dựng với ❤️ tại Việt Nam</div>
+            <div style={{ color: '#555', fontSize: 13 }}>Được xây dựng với Team CNTT tại Việt Nam</div>
           </div>
         </div>
       </footer>
